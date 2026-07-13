@@ -1,0 +1,5 @@
+# case-data-service configuration
+# TODO: grpc server port, datasource
+spring:
+  application:
+    name: case-data-service

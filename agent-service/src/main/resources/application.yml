@@ -1,0 +1,5 @@
+# agent-service configuration
+# TODO: kafka consumer, grpc client, llm settings
+spring:
+  application:
+    name: agent-service
