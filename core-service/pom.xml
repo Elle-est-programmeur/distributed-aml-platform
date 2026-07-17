@@ -15,6 +15,11 @@
     <name>core-service</name>
     <description>Transaction intake and screening service</description>
 
+    <properties>
+        <!-- core-service has a main class; re-enable repackage (skipped in parent) -->
+        <spring-boot.repackage.skip>false</spring-boot.repackage.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -22,7 +27,49 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <!-- Spring Boot 4 moved Kafka auto-configuration (KafkaTemplate, listener container
+             factory) out of spring-boot-autoconfigure into this dedicated module; spring-kafka
+             alone no longer activates it. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-kafka</artifactId>
+        </dependency>
+        <!-- Boot 4's web stack ships Jackson 3 (tools.jackson), but spring-kafka's JSON
+             serializers are compiled against Jackson 2 (com.fasterxml.jackson) as an optional
+             dependency, so it must be supplied explicitly. Version comes from the Boot BOM. -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <!-- spring-kafka's Jackson 2 serializers build their own ObjectMapper and only register
+             the Java 8 time module (Instant, etc.) if it is on the classpath. -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -33,6 +80,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- Windows JVMs report the legacy "Asia/Calcutta" alias, which the
+                         postgres:16 image's tzdata no longer contains; pin the modern ID -->
+                    <jvmArguments>-Duser.timezone=Asia/Kolkata</jvmArguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>
