@@ -7,18 +7,28 @@
     <parent>
         <groupId>com.tradesentry</groupId>
         <artifactId>tradesentry-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>core-service</artifactId>
+
     <name>core-service</name>
-    <description>Deployable 1 — REST intake, Kafka producer/consumers (modular monolith)</description>
+    <description>Transaction intake and screening service</description>
 
     <dependencies>
-        <!-- TODO: web, data-jpa, kafka, postgres, validation, security(jwt) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
+        <finalName>core-service</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

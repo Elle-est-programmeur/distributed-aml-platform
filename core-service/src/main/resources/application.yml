@@ -1,5 +1,0 @@
-# core-service configuration
-# TODO: server, datasource, kafka producer/consumer
-spring:
-  application:
-    name: core-service
