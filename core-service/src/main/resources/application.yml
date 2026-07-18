@@ -24,6 +24,9 @@ spring:
       properties:
         spring.json.trusted.packages: com.tradesentry.core.events.model
         spring.json.value.default.type: com.tradesentry.core.events.model.TransactionEvent
+        # Ignore the producer's __TypeId__ header (agent-service stamps its own class name on
+        # adjudicated events) and always bind to this service's default.type.
+        spring.json.use.type.headers: false
 
 logging:
   level:

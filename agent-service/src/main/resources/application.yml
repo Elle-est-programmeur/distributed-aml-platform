@@ -1,0 +1,26 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: agent-service
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: investigation-agent
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.tradesentry.agent.events
+        spring.json.value.default.type: com.tradesentry.agent.events.TransactionEvent
+        # Producers stamp a __TypeId__ header with their OWN class name; since each service
+        # keeps its own copy of the event, ignore that header and always bind to default.type.
+        spring.json.use.type.headers: false
+
+logging:
+  level:
+    com.tradesentry: INFO

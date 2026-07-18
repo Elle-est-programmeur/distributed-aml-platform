@@ -15,10 +15,35 @@
     <name>agent-service</name>
     <description>Investigation agent service</description>
 
+    <properties>
+        <!-- agent-service has a main class; re-enable repackage (skipped in parent) -->
+        <spring-boot.repackage.skip>false</spring-boot.repackage.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <!-- Boot 4 moved Kafka auto-config into this dedicated module; spring-kafka alone does
+             not activate KafkaTemplate / listener container. See core-service for details. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-kafka</artifactId>
+        </dependency>
+        <!-- spring-kafka 4.1's JSON serializers are compiled against Jackson 2 (absent from
+             Boot 4's Jackson-3 web stack) and need the JSR-310 module for Instant. -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

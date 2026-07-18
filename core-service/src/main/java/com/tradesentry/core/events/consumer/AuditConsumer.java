@@ -20,4 +20,10 @@ public class AuditConsumer {
         log.info("AUDIT ingested [tx={}, account={}, amount={} {}]",
                 event.transactionId(), event.accountId(), event.amount(), event.currency());
     }
+
+    @KafkaListener(topics = KafkaTopics.ADJUDICATED, groupId = "audit")
+    public void onAdjudicated(TransactionEvent event) {
+        log.info("AUDIT adjudicated [tx={}, account={}, decision={}, reason={}]",
+                event.transactionId(), event.accountId(), event.decision(), event.reason());
+    }
 }
