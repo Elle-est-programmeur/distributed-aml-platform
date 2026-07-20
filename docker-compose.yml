@@ -27,7 +27,8 @@ services:
       # listener must bind a routable host (matching the quorum voter 1@kafka:9093) because
       # apache/kafka:3.9.0's storage-format step rejects an advertised 0.0.0.0 controller.
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://kafka:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      # Services now run inside the compose network and reach the broker by its service name.
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
@@ -40,3 +41,50 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
+
+  case-data-service:
+    build:
+      context: "."
+      dockerfile: case-data-service/Dockerfile
+    container_name: tradesentry-case-data
+    ports:
+      - "9090:9090"
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  agent-service:
+    build:
+      context: "."
+      dockerfile: agent-service/Dockerfile
+    container_name: tradesentry-agent
+    ports:
+      - "8081:8081"
+    environment:
+      KAFKA_BOOTSTRAP: kafka:9092
+      CASE_DATA_GRPC: static://case-data-service:9090
+    depends_on:
+      kafka:
+        condition: service_healthy
+      case-data-service:
+        condition: service_started
+
+  core-service:
+    build:
+      context: "."
+      dockerfile: core-service/Dockerfile
+    container_name: tradesentry-core
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_BOOTSTRAP: kafka:9092
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tradesentry
+      DB_USER: tradesentry
+      DB_PASSWORD: tradesentry
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
