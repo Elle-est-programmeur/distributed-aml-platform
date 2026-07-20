@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.tradesentry.proto.casedata";
+option java_outer_classname = "CaseDataProto";
+
+package casedata;
+
+service CaseDataService {
+  // UNARY: one request, one response.
+  rpc GetAccountHistory (AccountHistoryRequest) returns (AccountHistoryResponse) {}
+
+  // SERVER-STREAMING: one request, a stream of responses (note the `stream` keyword).
+  rpc RetrieveSimilarCases (SimilarCasesRequest) returns (stream SimilarCase) {}
+}
+
+message AccountHistoryRequest {
+  string account_id = 1;
+  int32 lookback_days = 2;
+}
+
+message AccountHistoryResponse {
+  string account_id = 1;
+  int32 total_transactions = 2;
+  double avg_transaction_amount = 3;
+  double max_transaction_amount = 4;
+  int32 prior_flags = 5;
+  bool has_prior_sar = 6;
+  string risk_band = 7;
+}
+
+message SimilarCasesRequest {
+  string transaction_summary = 1;
+  double amount = 2;
+  string counterparty_country = 3;
+  int32 max_results = 4;
+}
+
+message SimilarCase {
+  string case_id = 1;
+  double similarity_score = 2;
+  string outcome = 3;
+  string summary = 4;
+}

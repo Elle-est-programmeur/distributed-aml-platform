@@ -29,6 +29,14 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.grpc</groupId>
+            <artifactId>spring-grpc-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tradesentry</groupId>
+            <artifactId>proto</artifactId>
+        </dependency>
         <!-- Boot 4 moved Kafka auto-config into this dedicated module; spring-kafka alone does
              not activate KafkaTemplate / listener container. See core-service for details. -->
         <dependency>
